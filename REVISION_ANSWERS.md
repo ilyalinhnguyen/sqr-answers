@@ -87,7 +87,7 @@ T1↔T2 shows A; T1↔T3 shows B; T1↔T4 shows C.
 | IEC 62304 | Medical |
 
 ## Q16: Mutation Score
-$$\text{Mutation Score} = \frac{\text{Killed}}{\text{Total} - \text{Equivalent}} = \frac{72}{100 - 10} = \frac{72}{90} = 0.8 = \mathbf{80\%}$$
+$$\text{Mutation Score} = \frac{\text{Killed}}{\text{Total} - \text{Equivalent}} = \frac{72}{100-10} = \frac{72}{90} = 0.8 = 80\%$$
 
 ## Q17: Mutation Operators (5 categories)
 1. **Arithmetic (AOR):** `a + b` → `a - b`
