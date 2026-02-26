@@ -15,7 +15,7 @@ Answers to all revision questions from Adequacy Criteria, Input Domain Testing, 
 | D. Requirements | 3. Specification |
 
 ## Q2: Coverage Formula
-$$\text{Coverage} = \frac{\text{Executed}}{\text{Total}} \times 100\% = \frac{45}{60} \times 100\% = 0.75 \times 100\% = \mathbf{75\%}$$
+$$\text{Coverage} = \frac{\text{Executed}}{\text{Total}} \times 100\\% = \frac{45}{60} \times 100\\% = 0.75 \times 100\\% = \mathbf{75\\%}$$
 
 ## Q3: Two Uses of Coverage
 1. **Generator:** Create tests to satisfy the criterion (e.g., write tests until 80% branch coverage)
