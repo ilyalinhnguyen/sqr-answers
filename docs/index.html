@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revision Answers — SQR</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --text: #e4e4e4;
+      --muted: #a0a0a0;
+      --accent: #7eb8da;
+      --table-border: #2a2a2a;
+      --code-bg: #1a1a1a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      margin: 0;
+      padding: 1rem 1.25rem 3rem;
+      max-width: 48rem;
+      margin: 0 auto;
+      font-size: 1rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    @media (min-width: 600px) {
+      body { padding: 1.5rem 2rem 4rem; font-size: 1.05rem; }
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--table-border);
+      padding-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+      color: var(--accent);
+    }
+    h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+    p { margin: 0 0 1rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul, ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+    li { margin-bottom: 0.35rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+      overflow-x: auto;
+      display: block;
+    }
+    @media (min-width: 500px) {
+      table { display: table; }
+    }
+    th, td {
+      border: 1px solid var(--table-border);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    th {
+      background: var(--code-bg);
+      font-weight: 600;
+      color: var(--accent);
+    }
+    tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+    hr {
+      border: none;
+      border-top: 1px solid var(--table-border);
+      margin: 2rem 0;
+    }
+    .katex { font-size: 1.05em; }
+    .katex-display { margin: 1rem 0; overflow-x: auto; overflow-y: hidden; }
+    strong { font-weight: 600; color: #fff; }
+    #toc {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      padding: 0.75rem 0;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--table-border);
+      z-index: 10;
+      font-size: 0.9rem;
+    }
+    #toc a {
+      display: inline-block;
+      padding: 0.2rem 0.5rem 0.2rem 0;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    #toc a:hover { color: var(--accent); }
+    #content { margin-top: 0.5rem; }
+    #loading { color: var(--muted); }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div id="toc"></div>
+  <div id="content">
+    <div id="loading">Loading revision answers…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    const RAW_URL = 'https://raw.githubusercontent.com/ilyalinhnguyen/sqr-answers/main/REVISION_ANSWERS.md';
+
+    async function load() {
+      try {
+        const res = await fetch(RAW_URL);
+        if (!res.ok) throw new Error(res.statusText);
+        const md = await res.text();
+        render(md);
+      } catch (e) {
+        document.getElementById('content').innerHTML =
+          '<p style="color:#c66;">Failed to load content. Make sure the repo is public and REVISION_ANSWERS.md exists on main.</p>';
+        console.error(e);
+      }
+    }
+
+    function slug(s) {
+      return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function extractToc(md) {
+      const lines = md.split('\n');
+      const toc = [];
+      for (const line of lines) {
+        const m = line.match(/^# (Part \d+:.*?)$/);
+        if (m) toc.push({ text: m[1], id: slug(m[1]) });
+      }
+      return toc;
+    }
+
+    marked.use({
+      renderer: {
+        heading({ depth, text }) {
+          const id = slug(text);
+          return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+        }
+      }
+    });
+
+    function render(md) {
+      const html = marked.parse(md);
+      const container = document.getElementById('content');
+      container.innerHTML = html;
+
+      renderMathInElement(container, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
+        ],
+        throwOnError: false
+      });
+
+      const toc = extractToc(md);
+      if (toc.length > 0) {
+        const tocEl = document.getElementById('toc');
+        tocEl.innerHTML = '<strong>Jump:</strong> ' + toc.slice(0, 10).map(t =>
+          `<a href="#${t.id}">${t.text}</a>`
+        ).join(' · ') + (toc.length > 10 ? ' …' : '');
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>
